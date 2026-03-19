@@ -68,7 +68,7 @@ for i in range(3):
 """
 
 #Generate embeddings
-model = SentenceTransformer("Qwen/Qwen3-Embedding-8B")
+model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
 embeddings = model.encode(all_chunks)
 
 #Store in vector DB
@@ -78,7 +78,7 @@ index = faiss.IndexFlatL2(dimension)
 index.add(np.array(embeddings))
 
 #Retrieval
-query = "Troubleshooting Issues with Microsoft Office"
+query = "My Microsoft excel is not working"
 
 query_embedding = model.encode([query])
 
@@ -100,16 +100,16 @@ Question:
 
 Answer:
 """
-
+print( prompt)
 #Call LLM
 response = requests.post(
     "http://localhost:11434/api/generate",
     json={
-        "model": "llama3",
-        "prompt": prompt
+        "model": "llama3.2:3b",
+        "prompt": prompt,
+        "stream": False
     }
 )
 
 answer = response.json()["response"]
 print(answer)
-
