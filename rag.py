@@ -48,8 +48,3 @@ def get_answer(query):
         }
     )
     return response.json()["response"]
-
-# --- For Testing only --- Remove after app.py is done
-query = "My Microsoft excel is not working"
-answer = get_answer(query)
-print(answer)
