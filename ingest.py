@@ -4,6 +4,12 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import os
 import pickle
+import re
+
+# Remove ** in the orignal document
+def clean_data(text):
+    text = re.sub(r"\*+", "", text)
+    return text.strip()
 
 # Load data
 def load_doc(csv_path):
@@ -14,6 +20,10 @@ def load_doc(csv_path):
         topic = str(row.get("ki_topic", "")).strip()
         main_text = str(row.get("ki_text", "")).strip()
         alt_text = str(row.get("alt_ki_text", "")).strip()
+
+        # Clean text
+        main_text = clean_data(main_text)
+        alt_text = clean_data(alt_text)
 
         # Add documents for both main and alt text
         if main_text:
@@ -50,24 +60,12 @@ def chunk_text(text, chunk_size=300):
 # Load CSV
 csv_path = "data/synthetic_knowledge_items.csv"
 docs= load_doc(csv_path)
-"""
-print(f"total documents: {len(docs)}")
-print("Sample document:\n)")
-print(docs[0])
-"""
 
 # Chunking
 all_chunks = []
 for doc in docs:
     chunks = chunk_text(doc, 128)
     all_chunks.extend(chunks)
-
-"""
-print(f"Total chunks: {len(all_chunks)}\n")
-for i in range(3):
-    print(f"--- Chunk {i} ---\n")
-    print(all_chunks[i])
-"""
 
 # Generate embeddings
 model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
@@ -86,4 +84,3 @@ with open("vector_store/chunks.pkl", "wb") as f:
     pickle.dump(all_chunks, f)
 
 print("FAISS index saved")
-
