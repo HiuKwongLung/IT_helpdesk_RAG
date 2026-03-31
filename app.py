@@ -3,7 +3,27 @@ from rag import get_answer
 
 st.title("IT Helpdesk Chatbot")
 
-query = st.text_input("Ask anything:")
+# store chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# display chat history
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# user input
+query = st.chat_input("Ask anything:")
 if query:
-    answer = get_answer(query)
-    st.write(answer)
+
+    st.session_state.messages.append({"role":"user", "content":query})
+
+    with st.chat_message("user"):
+        st.markdown(query)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            answer = get_answer(query)
+        st.markdown(answer)
+
+    st.session_state.messages.append({"role": "assistant", "content": answer})
