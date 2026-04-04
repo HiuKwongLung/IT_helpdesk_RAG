@@ -12,29 +12,29 @@ def load_vector_db():
     model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
     return index, chunks, model
 
-
-def get_answer(query):
+def retrieve(query, k=3):
     index, chunks, model = load_vector_db()
 
-    # Retrieval
     query_embedding = model.encode([query])
-
-    D, I = index.search(query_embedding, k=3)
+    D, I = index.search(query_embedding, k=k)
 
     results = [chunks[i] for i in I[0]]
 
+    return results
+
+def get_answer(query, retrieved_chunks):
     # Build prompt
-    context = "\n\n".join(results)
+    context = "\n".join(retrieved_chunks)
 
     prompt = f"""
     Use the following context to answer the question.
-    
+
     Context:
     {context}
-    
+
     Question:
     {query}
-    
+
     Answer:
     """
 

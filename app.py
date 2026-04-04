@@ -1,5 +1,5 @@
 import streamlit as st
-from rag import get_answer
+from rag import get_answer, retrieve
 
 st.title("IT Helpdesk Chatbot")
 
@@ -23,7 +23,8 @@ if query:
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            answer = get_answer(query)
+            retrieved_chunks = retrieve(query, 3)
+            answer = get_answer(query, retrieved_chunks)
         st.markdown(answer)
 
     st.session_state.messages.append({"role": "assistant", "content": answer})
