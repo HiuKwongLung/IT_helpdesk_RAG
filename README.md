@@ -42,7 +42,7 @@ This dataset simulates real-world IT helpdesk scenarios and enables testing of r
 - **Embeddings:** Sentence Transformers (`Qwen3-Embedding-0.6B`)  
 - **Vector Database:** FAISS  
 - **Frontend/UI:** Streamlit  
-- 
+
 ### Architecture
 
 ```mermaid
